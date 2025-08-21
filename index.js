@@ -1,73 +1,63 @@
-// index.js
-
 import express from 'express';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
-import swaggerJsdoc from 'swagger-jsdoc';
-
 import dotenv from 'dotenv';
+
+// --- Carga de Módulos de Herramientas ---
+// Cada herramienta que crees se importará aquí.
+import searchTool from './tools/search/index.js';
+// import scrapeTool from './tools/scrape/index.js'; // <- Así añadirías una nueva
+
 dotenv.config();
 
-// Importar rutas
-import searchRoutes from './routes/search.js';
-
 const app = express();
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
-// --- Configuración de Swagger ---
-const swaggerOptions = {
-  definition: {
-    openapi: '3.1.0',
-    info: {
-      title: 'Servidor de Herramientas KipuxAI',
-      version: '1.0.0',
-      description: 'API para herramientas de Open Web UI (SearXNG, Browserless, Tika).',
-    },
-  },
-  // Apunta a los archivos que contienen las definiciones de tus rutas
-  apis: ['./routes/*.js'], 
-};
-const openapiSpecification = swaggerJsdoc(swaggerOptions);
-
-// --- Middlewares ---
+// --- Middlewares Globales ---
 app.use(cors());
 app.use(express.json());
 
+// Middleware de logging (opcional, pero útil para depuración)
 app.use((req, res, next) => {
-  console.log(`\n================= NUEVA PETICIÓN ENTRANTE =================`);
-  console.log(`[${new Date().toISOString()}]`);
-  
-  console.log('\n--- 1. Información General ---');
-  console.log(`Método HTTP: ${req.method}`);
-  console.log(`URL Completa: ${req.originalUrl}`);
-  console.log(`IP Remota: ${req.ip || req.connection.remoteAddress}`);
-
-  console.log('\n--- 2. Headers (El "Sobre") ---');
-  console.log(JSON.stringify(req.headers, null, 2));
-
-  // Solo muestra el body si existe y no está vacío
-  if (req.body && Object.keys(req.body).length > 0) {
-    console.log('\n--- 3. Body (La "Carta" - JSON de la herramienta) ---');
-    console.log(JSON.stringify(req.body, null, 2));
-  } else {
-    console.log('\n--- 3. Body (La "Carta" - JSON de la herramienta) ---');
-    console.log('No hay body en esta petición (o está vacío).');
-  }
-
-  console.log(`=========================================================\n`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
   next();
 });
 
-// --- Endpoints ---
-app.get('/api/openapi.json', (req, res) => {
-  res.json(openapiSpecification);
+// --- Registro de Herramientas ---
+// Aquí es donde "conectamos" cada herramienta a nuestro servidor principal.
+// Para cada herramienta, hacemos dos cosas:
+// 1. Creamos un endpoint para servir su especificación OpenAPI.
+// 2. Montamos su router en una ruta base.
+
+// Registro de la Herramienta de Búsqueda
+app.use('/api/search', searchTool.router);
+app.get('/api/search/openapi.json', (req, res) => {
+  res.json(searchTool.spec);
 });
+console.log('✅ Herramienta de Búsqueda registrada en /api/search');
 
-app.use('/api', searchRoutes);
+/*
+// Así se registraría la futura herramienta de Scraping
+app.use('/api/scrape', scrapeTool.router);
+app.get('/api/scrape/openapi.json', (req, res) => {
+  res.json(scrapeTool.spec);
+});
+console.log('✅ Herramienta de Scraping registrada en /api/scrape');
+*/
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
+// --- Ruta Raíz para Verificación ---
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    message: 'Servidor de Herramientas KipuxAI está funcionando.',
+    available_tools: {
+      search: '/api/search/openapi.json'
+      // scrape: '/api/scrape/openapi.json' // <- Se añadiría aquí
+    }
+  });
+});
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {
-  console.log(`Servidor de herramientas escuchando en http://localhost:${PORT}`);
-}); 
+  console.log(`\n🚀 Servidor de herramientas escuchando en http://localhost:${PORT}`);
+});

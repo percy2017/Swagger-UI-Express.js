@@ -1,3 +1,5 @@
+// tools/search/router.js
+
 import express from 'express';
 import axios from 'axios';
 
@@ -5,11 +7,12 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/web-search:
+ * /web-search:
  *   post:
  *     summary: Realiza una búsqueda en la web con SearXNG.
+ *     description: Herramienta que utiliza SearXNG para obtener resultados de búsqueda de internet.
  *     operationId: webSearch
- *     tags: [Herramientas]
+ *     tags: [Búsqueda]
  *     requestBody:
  *       required: true
  *       content:
@@ -28,7 +31,11 @@ const router = express.Router();
  *               - query
  *     responses:
  *       200:
- *         description: Búsqueda exitosa.
+ *         description: Búsqueda realizada con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
  */
 router.post('/web-search', async (req, res) => {
   const { query, count = 6 } = req.body;
