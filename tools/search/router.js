@@ -5,9 +5,6 @@ import axios from 'axios';
 import { URL } from 'url';
 
 // --- CONFIGURACIÓN DE BÚSQUEDA ---
-// Lista de categorías principales en las que se buscará.
-// Para extender la búsqueda, simplemente añade más categorías a este array
-// (ej. 'science', 'social media', 'map').
 const SEARCH_CATEGORIES = ['general', 'news', 'videos', 'images'];
 const MIN_RESULTS = 2;
 const MAX_RESULTS = 10;

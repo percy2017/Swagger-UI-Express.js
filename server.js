@@ -1,12 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+dotenv.config();
 
 // --- Carga de Módulos de Herramientas ---
 import searchTool from './tools/search/index.js';
 import scrapeTool from './tools/scrape/index.js';
-
-dotenv.config();
+import extractTool from './tools/extract/index.js';
+import visionTool from './tools/vision/index.js';
+import ttsTool from './tools/tts/index.js';
+import asrTool from './tools/asr/index.js';
+import embeddingsTool from './tools/embeddings/index.js';
+import crawlTool from './tools/crawl/index.js';
 
 const app = express();
 const PORT = process.env.PORT || 5005;
@@ -14,13 +19,9 @@ const PORT = process.env.PORT || 5005;
 // --- Middlewares Globales ---
 app.use(cors());
 app.use(express.json());
-
-// --- SERVIDOR DE ARCHIVOS ESTÁTICOS ---
-// NUEVA LÍNEA: Esto le dice a Express que cualquier petición a /static/...
-// debe servir los archivos que se encuentran en la carpeta local ./static/
 app.use('/static', express.static('static'));
 
-// Middleware de logging detallado
+// Middleware
 app.use((req, res, next) => {
   console.log(`\n================= NUEVA PETICIÓN ENTRANTE =================`);
   console.log(`[${new Date().toISOString()}]`);
@@ -35,21 +36,53 @@ app.use((req, res, next) => {
 
 
 // --- Registro de Herramientas ---
-
-// Registro de la Herramienta de Búsqueda
 app.use('/api/search', searchTool.router);
 app.get('/api/search/openapi.json', (req, res) => {
   res.json(searchTool.spec);
 });
 console.log('✅ Herramienta de Búsqueda registrada en /api/search');
 
-// Registro de la Herramienta de Scraping
 app.use('/api/scrape', scrapeTool.router);
 app.get('/api/scrape/openapi.json', (req, res) => {
   res.json(scrapeTool.spec);
 });
 console.log('✅ Herramienta de Scraping registrada en /api/scrape');
 
+app.use('/api/extract', extractTool.router);
+app.get('/api/extract/openapi.json', (req, res) => {
+  res.json(extractTool.spec);
+});
+console.log('✅ Herramienta de Extracción registrada en /api/extract');
+
+app.use('/api/vision', visionTool.router);
+app.get('/api/vision/openapi.json', (req, res) => {
+  res.json(visionTool.spec);
+});
+console.log('✅ Herramienta de Visión registrada en /api/vision');
+
+app.use('/api/tts', ttsTool.router);
+app.get('/api/tts/openapi.json', (req, res) => {
+  res.json(ttsTool.spec);
+});
+console.log('✅ Herramienta de TTS registrada en /api/tts');
+
+app.use('/api/asr', asrTool.router);
+app.get('/api/asr/openapi.json', (req, res) => {
+  res.json(asrTool.spec);
+});
+console.log('✅ Herramienta de ASR registrada en /api/asr');
+
+app.use('/api/embeddings', embeddingsTool.router);
+app.get('/api/embeddings/openapi.json', (req, res) => {
+  res.json(embeddingsTool.spec);
+});
+console.log('✅ Herramienta de Embeddings registrada en /api/embeddings');
+
+app.use('/api/crawl', crawlTool.router);
+app.get('/api/crawl/openapi.json', (req, res) => {
+  res.json(crawlSpec.spec);
+});
+console.log('✅ Herramienta de Crawler registrada en /api/crawl');
 
 // --- Ruta Raíz para Verificación ---
 app.get('/', (req, res) => {
@@ -58,7 +91,13 @@ app.get('/', (req, res) => {
     message: 'Servidor de Herramientas KipuxAI está funcionando.',
     available_tools: {
       search: '/api/search/openapi.json',
-      scrape: '/api/scrape/openapi.json'
+      scrape: '/api/scrape/openapi.json',
+      extract: '/api/extract/openapi.json',
+      vision: '/api/vision/openapi.json',
+      tts: '/api/tts/openapi.json',
+      asr: '/api/asr/openapi.json',
+      embeddings: '/api/embeddings/openapi.json',
+      crawl: '/api/crawl/openapi.json'
     }
   });
 });
