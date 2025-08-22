@@ -3,30 +3,38 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 // --- Carga de Módulos de Herramientas ---
-// Cada herramienta que crees se importará aquí.
 import searchTool from './tools/search/index.js';
-// import scrapeTool from './tools/scrape/index.js'; // <- Así añadirías una nueva
+import scrapeTool from './tools/scrape/index.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5005;
 
 // --- Middlewares Globales ---
 app.use(cors());
 app.use(express.json());
 
-// Middleware de logging (opcional, pero útil para depuración)
+// --- SERVIDOR DE ARCHIVOS ESTÁTICOS ---
+// NUEVA LÍNEA: Esto le dice a Express que cualquier petición a /static/...
+// debe servir los archivos que se encuentran en la carpeta local ./static/
+app.use('/static', express.static('static'));
+
+// Middleware de logging detallado
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log(`\n================= NUEVA PETICIÓN ENTRANTE =================`);
+  console.log(`[${new Date().toISOString()}]`);
+  console.log(`Método HTTP: ${req.method}`);
+  console.log(`URL Completa: ${req.originalUrl}`);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+  }
+  console.log(`=========================================================\n`);
   next();
 });
 
+
 // --- Registro de Herramientas ---
-// Aquí es donde "conectamos" cada herramienta a nuestro servidor principal.
-// Para cada herramienta, hacemos dos cosas:
-// 1. Creamos un endpoint para servir su especificación OpenAPI.
-// 2. Montamos su router en una ruta base.
 
 // Registro de la Herramienta de Búsqueda
 app.use('/api/search', searchTool.router);
@@ -35,14 +43,12 @@ app.get('/api/search/openapi.json', (req, res) => {
 });
 console.log('✅ Herramienta de Búsqueda registrada en /api/search');
 
-/*
-// Así se registraría la futura herramienta de Scraping
+// Registro de la Herramienta de Scraping
 app.use('/api/scrape', scrapeTool.router);
 app.get('/api/scrape/openapi.json', (req, res) => {
   res.json(scrapeTool.spec);
 });
 console.log('✅ Herramienta de Scraping registrada en /api/scrape');
-*/
 
 
 // --- Ruta Raíz para Verificación ---
@@ -51,13 +57,13 @@ app.get('/', (req, res) => {
     status: 'online',
     message: 'Servidor de Herramientas KipuxAI está funcionando.',
     available_tools: {
-      search: '/api/search/openapi.json'
-      // scrape: '/api/scrape/openapi.json' // <- Se añadiría aquí
+      search: '/api/search/openapi.json',
+      scrape: '/api/scrape/openapi.json'
     }
   });
 });
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {
-  console.log(`\n🚀 Servidor de herramientas escuchando en http://localhost:${PORT}`);
+  console.log(`\n🚀 Servidor de herramientas escuchando en ${process.env.PUBLIC_SERVER_URL}`);
 });
