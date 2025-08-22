@@ -12,6 +12,7 @@ import ttsTool from './tools/tts/index.js';
 import asrTool from './tools/asr/index.js';
 import embeddingsTool from './tools/embeddings/index.js';
 import crawlTool from './tools/crawl/index.js';
+import evolutionTool from './tools/evolution/index.js';
 
 const app = express();
 const PORT = process.env.PORT || 5005;
@@ -80,9 +81,15 @@ console.log('✅ Herramienta de Embeddings registrada en /api/embeddings');
 
 app.use('/api/crawl', crawlTool.router);
 app.get('/api/crawl/openapi.json', (req, res) => {
-  res.json(crawlSpec.spec);
+  res.json(crawlTool.spec);
 });
 console.log('✅ Herramienta de Crawler registrada en /api/crawl');
+
+app.use('/api/evolution', evolutionTool.router);
+app.get('/api/evolution/openapi.json', (req, res) => {
+  res.json(evolutionTool.spec);
+});
+console.log('✅ Herramienta de Evolution registrada en /api/evolution');
 
 // --- Ruta Raíz para Verificación ---
 app.get('/', (req, res) => {
@@ -97,7 +104,8 @@ app.get('/', (req, res) => {
       tts: '/api/tts/openapi.json',
       asr: '/api/asr/openapi.json',
       embeddings: '/api/embeddings/openapi.json',
-      crawl: '/api/crawl/openapi.json'
+      crawl: '/api/crawl/openapi.json',
+      evolution: '/api/evolution/openapi.json'
     }
   });
 });

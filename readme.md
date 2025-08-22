@@ -169,7 +169,7 @@ Registra cada herramienta en **Configuración > Modelos > Servidores de Herramie
 
 ## 🗺️ Hoja de Ruta (Roadmap)
 
-### Fase 1: Motor de Herramientas (Completada)
+### Fase 1: Motor de Herramientas
 -   [x] **Búsqueda** (SearXNG)
 -   [x] **Scraping** (Browserless)
 -   [x] **Extracción de Documentos** (Tika)
@@ -178,11 +178,50 @@ Registra cada herramienta en **Configuración > Modelos > Servidores de Herramie
 -   [x] **Voz a Texto** (ASR)
 -   [x] **Gestión de Embeddings** (Ollama + pgvector)
 -   [x] **Rastreo Web** (Crawler)
+-   [] **manager para whasapp** (Evoltion Api)
+-   [] **manager para correos** (SMTP)
 
-### Fase 2: Aplicación SaaS (Próximos Pasos)
--   [ ] **Desarrollo del Servicio SaaS de Chatbots:** Un nuevo proyecto que consumirá este servidor de herramientas.
--   [ ] **Panel de Administración:** Interfaz para que los clientes configuren sus chatbots.
--   [ ] **Widget de Chat:** Componente frontend para insertar en los sitios de los clientes.
--   [ ] **Integración con WooCommerce API** para consultas en tiempo real.
--   [ ] **Manejo de Errores Centralizado** en el servidor de herramientas.
--   [ ] **Sistema de Limpieza de Artefactos** en la carpeta `/static`.
+
+
+.
+|-- .env
+|-- .gitignore
+|-- package-lock.json
+|-- package.json
+|-- readme.md
+|-- server.js
+`-- tools
+    |-- asr
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- crawl
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- embeddings
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- extract
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- scrape
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- search
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    |-- tts
+    |   |-- index.js
+    |   |-- router.js
+    |   `-- spec.js
+    `-- vision
+        |-- index.js
+        |-- router.js
+        `-- spec.js
+
+78 directories, 117 files

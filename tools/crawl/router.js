@@ -11,7 +11,7 @@ const BROWSERLESS_URL = process.env.BROWSERLESS_URL;
 const BROWSERLESS_TOKEN = process.env.BROWSERLESS_TOKEN;
 
 /**
- * @openapi
+ * @swagger
  * /get-links:
  *   post:
  *     summary: Rastrea una página de inicio para encontrar todos los enlaces internos.
