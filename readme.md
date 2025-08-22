@@ -182,7 +182,7 @@ Registra cada herramienta en **Configuración > Modelos > Servidores de Herramie
 -   [] **manager para correos** (SMTP)
 
 
-
+# Directorios
 .
 |-- .env
 |-- .gitignore
@@ -224,4 +224,3 @@ Registra cada herramienta en **Configuración > Modelos > Servidores de Herramie
         |-- router.js
         `-- spec.js
 
-78 directories, 117 files
